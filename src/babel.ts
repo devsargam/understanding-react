@@ -1,31 +1,38 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import * as parser from "@babel/parser";
-import _traverse, { NodePath } from "@babel/traverse";
-import * as t from "@babel/types";
-import * as fs from "fs";
-import path from "path";
-import { displayChild } from "./helper";
+import fs from "node:fs";
+import path from "node:path";
+import { buildAstExplorerReport } from "./astExplorer";
+import { parseArgs, printUsage, toDisplayPath } from "./cli";
 
-console.clear();
-// @ts-expect-error
-const traverse = _traverse.default;
+function main() {
+  const options = parseArgs(process.argv.slice(2));
 
-const code = fs.readFileSync(path.join(process.cwd(), "src/App.tsx"), "utf-8");
-console.log("React code:");
-console.log(code);
+  if (options.help) {
+    console.log(printUsage());
+    return;
+  }
 
-const ast = parser.parse(code, {
-  sourceType: "module",
-  plugins: ["jsx", "typescript"],
-});
+  const absoluteFilePath = path.resolve(process.cwd(), options.filePath);
+  if (!fs.existsSync(absoluteFilePath)) {
+    throw new Error(`File not found: ${toDisplayPath(absoluteFilePath)}`);
+  }
 
-traverse(ast, {
-  JSXElement(path: NodePath<t.JSXElement>) {
-    if (!path) {
-      return;
-    }
-    const node = path.node;
+  const code = fs.readFileSync(absoluteFilePath, "utf8");
+  const report = buildAstExplorerReport(toDisplayPath(absoluteFilePath), code, {
+    showCode: options.showCode,
+    showSummary: options.showSummary,
+    showLocations: options.showLocations,
+  });
 
-    displayChild(node);
-  },
-});
+  console.clear();
+  console.log(report);
+}
+
+try {
+  main();
+} catch (error) {
+  const message = error instanceof Error ? error.message : "Unknown error";
+  console.error(message);
+  console.error("");
+  console.error(printUsage());
+  process.exitCode = 1;
+}

@@ -1,19 +1,75 @@
-## Understanding React ⚛️
+## Understanding React
 
-This is a project to understand how React is parsed and transformed into JavaScript with Babel.
+This project is an AST explorer for React JSX written in TypeScript. It parses a TSX file with Babel and prints a readable tree of:
 
-### Quick Start 🚀
+- JSX elements and fragments
+- props
+- text nodes
+- expression containers
+- nested JSX inside expressions such as `map`, conditionals, and logical `&&`
+- source locations
 
-1. Install modules:
+### Quick Start
+
+1. Install dependencies:
 
    ```bash
    pnpm install
    ```
 
-2. Run the watcher:
+2. Run the explorer against the demo file:
+
+   ```bash
+   pnpm start
+   ```
+
+3. Watch the file while you edit:
 
    ```bash
    pnpm watch
    ```
 
-3. Open `src/App.tsx` and fiddle with the code.
+### Commands
+
+Explore the default file:
+
+```bash
+pnpm start
+```
+
+Explore a specific file:
+
+```bash
+pnpm start -- src/App.tsx
+```
+
+Print the source code before the tree:
+
+```bash
+pnpm start -- --code
+```
+
+Hide the summary:
+
+```bash
+pnpm start -- --no-summary
+```
+
+Hide line and column locations:
+
+```bash
+pnpm start -- --no-loc
+```
+
+### Demo File
+
+The sample [`src/App.tsx`](./src/App.tsx) includes:
+
+- fragments
+- custom components
+- props with expressions
+- conditional rendering
+- `map` rendering
+- nested JSX inside expression containers
+
+Open that file and change the JSX to see how the AST tree changes.

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/babel.ts",
+    "explore": "tsx src/babel.ts",
     "watch": "tsx watch src/babel.ts"
   },
   "dependencies": {
